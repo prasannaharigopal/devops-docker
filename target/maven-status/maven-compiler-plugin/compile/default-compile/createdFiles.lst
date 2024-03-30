@@ -1,0 +1,6 @@
+com\devops\calculator\entity\Operation.class
+com\devops\calculator\serviceImpl\CalculatorServiceImpl.class
+com\devops\calculator\controller\CalculatorController.class
+com\devops\calculator\CalculatorApplication.class
+com\devops\calculator\service\CalculatorService.class
+com\devops\calculator\DTO\OperandsDTORequest.class

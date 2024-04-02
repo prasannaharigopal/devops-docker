@@ -1,29 +1,52 @@
 pipeline {
     agent any
-    tools{
-        jdk 'JAVA_HOME'
-        maven 'MAVEN'
-        dockerTool 'docker'
+    
+    environment {
+        DOCKER_IMAGE = 'calculator-container'
     }
-
+    
     stages {
-        stage('Build') {
+        stage('Clone Repository') {
             steps {
-                // Build your Spring Boot application using Maven or Gradle
-                bat 'mvn clean package'
+                git 'https://github.com/prasannaharigopal/devops-docker.git'
             }
         }
+        
+        stage('Build and Package') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        
         stage('Build Docker Image') {
             steps {
-                // Build Docker image
-                bat 'docker build -t customer-management-service-0.0.1-SNAPSHOT .'
+                script {
+                    docker.build("${DOCKER_IMAGE}:${env.BUILD_NUMBER}")
+                }
             }
         }
-        stage('Run Docker Container') {
+        
+        stage('Push Docker Image') {
             steps {
-                // Run Docker container
-                bat 'docker run -d -p 8080:8080 customer-management-service-0.0.1-SNAPSHOT'
+                script {
+                    dockerImage.push("latest")
+                }
             }
+        }
+        
+        stage('Deploy') {
+            steps {
+                sh 'docker-compose up -d'
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Pipeline succeeded! Application deployed successfully.'
+        }
+        failure {
+            echo 'Pipeline failed. Please check logs for details.'
         }
     }
 }

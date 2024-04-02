@@ -20,7 +20,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    //docker.image('prasannaharigopal/my-spring-boot-app').push('latest') // Push the Docker image to a Docker registry
+                    docker.image('prasannaharigopal/my-spring-boot-app').push('latest') // Push the Docker image to a Docker registry
                     // Deploy the Docker image to your Docker environment
                     //sh 'docker tag my-spring-boot-app prasannaharigopal/my-spring-boot-app:latest'
 

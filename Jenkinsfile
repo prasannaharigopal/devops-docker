@@ -1,37 +1,27 @@
 pipeline {
     agent any
-    tools{
-        maven 'MAVEN'
-        dockerTool 'docker'
-    }
-    stages{
-        stage('Build Maven'){
-            steps{
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/prasannaharigopal/devops-docker']]])
-                bat 'mvn clean install'
+ 
+    stages {
+        stage('Build') {
+            steps {
+                bat 'mvn clean package' // Build the Spring Boot application with Maven
             }
         }
-        stage('Build docker image'){
-            steps{
-                script{
-                    bat 'docker build -t evprasannaharigopal/calculator-service.jar .'
+        stage('Build Docker Image') {
+            steps {
+                script {
+                   bat 'docker.build('my-spring-boot-app')' // Build a Docker image named my-spring-boot-app
                 }
             }
         }
-        stage('Push image to Hub'){
-            steps{
-                script{
-                   withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                   bat 'docker login -u evprasannaharigopal -p ${dockerhubpwd}'
-
-}
-                   bat 'docker push evprasannaharigopal/calculator-service'
+        stage('Deploy') {
+            steps {
+                script {
+                    docker.image('my-spring-boot-app').push('latest') // Push the Docker image to a Docker registry
+                    // Deploy the Docker image to your Docker environment
+                    bat 'docker run -d -p 8080:8080 my-spring-boot-app:latest'
                 }
             }
         }
-       
     }
 }
-
-
-        

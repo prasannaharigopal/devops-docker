@@ -1,16 +1,16 @@
 pipeline {
     agent any
+    tools {
+        dockerTool 'docker'
+        maven 'MAVEN'
+        jdk 'JAVA_HOME'
+    }
     
     environment {
         DOCKER_IMAGE = 'calculator-container'
     }
     
     stages {
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/prasannaharigopal/devops-docker.git'
-            }
-        }
         
         stage('Build and Package') {
             steps {

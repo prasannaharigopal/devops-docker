@@ -4,6 +4,7 @@ pipeline {
          maven 'maven'
          dockerTool 'docker'
      }
+    
     stages {
         stage('Build') {
             steps {
@@ -20,10 +21,10 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    docker.image('prasannaharigopal/my-spring-boot-app').push('latest') // Push the Docker image to a Docker registry
+                    // Push the Docker image to a Docker registry
                     // Deploy the Docker image to your Docker environment
                     //sh 'docker tag my-spring-boot-app prasannaharigopal/my-spring-boot-app:latest'
-
+                   
                     sh 'docker run -d -p 8888:8080 my-spring-boot-app:latest'
                 }
             }

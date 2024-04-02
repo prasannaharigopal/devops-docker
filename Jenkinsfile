@@ -24,7 +24,7 @@ pipeline {
                     // Deploy the Docker image to your Docker environment
                     //sh 'docker tag my-spring-boot-app prasannaharigopal/my-spring-boot-app:latest'
 
-                    sh 'docker run -d -p 8080:8080 my-spring-boot-app:latest'
+                    sh 'docker run -d -p 8888:8080 my-spring-boot-app:latest'
                 }
             }
         }

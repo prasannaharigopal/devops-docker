@@ -1,51 +1,36 @@
 pipeline {
     agent any
-    tools {
+    tools{
         maven 'MAVEN'
-        jdk 'JAVA_HOME'
     }
-    
-    environment {
-        DOCKER_IMAGE = 'calculator-container'
-    }
-    
-    stages {
-        
-        stage('Build and Package') {
-            steps {
-                sh 'mvn clean package'
+    stages{
+        stage('Build Maven'){
+            steps{
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/prasannaharigopal/devops-docker']]])
+                bat 'mvn clean install'
             }
         }
-        
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    docker.build("${DOCKER_IMAGE}:${env.BUILD_NUMBER}")
+        stage('Build docker image'){
+            steps{
+                script{
+                    bat 'docker build -t evprasannaharigopal/calculator-service.jar .'
                 }
             }
         }
-        
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    dockerImage.push("latest")
+        stage('Push image to Hub'){
+            steps{
+                script{
+                   withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                   bat 'docker login -u evprasannaharigopal -p ${dockerhubpwd}'
+
+}
+                   bat 'docker push evprasannaharigopal/calculator-service'
                 }
             }
         }
-        
-        stage('Deploy') {
-            steps {
-                sh 'docker-compose up -d'
-            }
-        }
-    }
-    
-    post {
-        success {
-            echo 'Pipeline succeeded! Application deployed successfully.'
-        }
-        failure {
-            echo 'Pipeline failed. Please check logs for details.'
-        }
+       
     }
 }
+
+
+        

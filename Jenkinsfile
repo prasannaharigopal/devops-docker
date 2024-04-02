@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                bat 'mvn clean package' // Build the Spring Boot application with Maven
+                sh 'mvn clean package' // Build the Spring Boot application with Maven
             }
         }
         stage('Build Docker Image') {
